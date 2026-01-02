@@ -31,3 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### RSA Keys - Security sensitive files ###
+src/main/resources/certs/*.pem
+keypair.pem
+private.pem
+public.pem
+
