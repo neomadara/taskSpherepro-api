@@ -1,7 +1,10 @@
 package com.zero.tasksphere.controller;
 
+import com.zero.tasksphere.dto.LoginRequest;
+import com.zero.tasksphere.dto.LoginResponse;
 import com.zero.tasksphere.dto.UserRegistrationDto;
 import com.zero.tasksphere.entity.User;
+import com.zero.tasksphere.service.JwtService;
 import com.zero.tasksphere.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,10 +20,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final JwtService jwtService;
 
     @PostMapping("/register")
     public ResponseEntity<User> registered(@Valid @RequestBody UserRegistrationDto registrationDto) {
         User user = userService.regissterUser(registrationDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(user);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
+        User user = userService.authenticateUser(loginRequest.getUsername(), loginRequest.getPassword());
+        String token = jwtService.generateToken(user.getUsername());
+        return ResponseEntity.ok(new LoginResponse(token, user.getUsername()));
     }
 }

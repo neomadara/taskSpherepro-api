@@ -31,4 +31,15 @@ public class UserService {
 
         return userRepository.save(user);
     }
+
+    public User authenticateUser(String username, String password) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new IllegalArgumentException("Contraseña incorrecta");
+        }
+
+        return user;
+    }
 }
