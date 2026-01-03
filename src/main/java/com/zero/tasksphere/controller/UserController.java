@@ -31,7 +31,7 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         User user = userService.authenticateUser(loginRequest.getUsername(), loginRequest.getPassword());
-        String token = jwtService.generateToken(user.getUsername());
+        String token = jwtService.generateToken(user.getUsername(), user.getId());
         return ResponseEntity.ok(new LoginResponse(token, user.getUsername()));
     }
 }
