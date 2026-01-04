@@ -4,6 +4,7 @@ import com.zero.tasksphere.dto.TaskCreationDto;
 import com.zero.tasksphere.dto.TaskResponseDto;
 import com.zero.tasksphere.entity.Task;
 import com.zero.tasksphere.entity.User;
+import com.zero.tasksphere.mapper.TaskMapper;
 import com.zero.tasksphere.repository.TaskRepository;
 import com.zero.tasksphere.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 public class TaskService {
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
+    private final TaskMapper taskMapper;
 
     @Transactional
     public TaskResponseDto createTask(TaskCreationDto taskCreationDto, Long userId) {
@@ -29,11 +31,6 @@ public class TaskService {
 
         Task savedTask = taskRepository.save(task);
 
-        return TaskResponseDto.builder()
-                .id(savedTask.getId())
-                .nombre(savedTask.getNombre())
-                .descripcion(savedTask.getDescripcion())
-                .userId(user.getId())
-                .build();
+        return taskMapper.toDto(savedTask);
     }
 }
