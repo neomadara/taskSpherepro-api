@@ -2,7 +2,7 @@ package com.zero.tasksphere.controller;
 
 
 import com.zero.tasksphere.dto.TaskCreationDto;
-import com.zero.tasksphere.entity.Task;
+import com.zero.tasksphere.dto.TaskResponseDto;
 import com.zero.tasksphere.service.JwtService;
 import com.zero.tasksphere.service.TaskService;
 import jakarta.validation.Valid;
@@ -25,14 +25,14 @@ public class TaskController {
     private final JwtService jwtService;
 
     @PostMapping("/create")
-    public ResponseEntity<Task> createTask(@Valid @RequestBody TaskCreationDto taskCreationDto) {
+    public ResponseEntity<TaskResponseDto> createTask(@Valid @RequestBody TaskCreationDto taskCreationDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         Jwt jwt = (Jwt) authentication.getPrincipal();
         Long userId = jwt.getClaim("userId");
 
-        Task task = taskService.createTask(taskCreationDto, userId);
-        return ResponseEntity.status(HttpStatus.CREATED).body(task);
+        TaskResponseDto taskResponse = taskService.createTask(taskCreationDto, userId);
+        return ResponseEntity.status(HttpStatus.CREATED).body(taskResponse);
     }
 
 }

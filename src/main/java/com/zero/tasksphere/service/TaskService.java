@@ -1,6 +1,7 @@
 package com.zero.tasksphere.service;
 
 import com.zero.tasksphere.dto.TaskCreationDto;
+import com.zero.tasksphere.dto.TaskResponseDto;
 import com.zero.tasksphere.entity.Task;
 import com.zero.tasksphere.entity.User;
 import com.zero.tasksphere.repository.TaskRepository;
@@ -16,7 +17,7 @@ public class TaskService {
     private final UserRepository userRepository;
 
     @Transactional
-    public Task createTask(TaskCreationDto taskCreationDto, Long userId) {
+    public TaskResponseDto createTask(TaskCreationDto taskCreationDto, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
@@ -26,6 +27,13 @@ public class TaskService {
                 .user(user)
                 .build();
 
-        return taskRepository.save(task);
+        Task savedTask = taskRepository.save(task);
+
+        return TaskResponseDto.builder()
+                .id(savedTask.getId())
+                .nombre(savedTask.getNombre())
+                .descripcion(savedTask.getDescripcion())
+                .userId(user.getId())
+                .build();
     }
 }
